@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Évaluation diagnostique — Fractions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --vert-fort:#108c5a; --vert-bord:#0a6e3f; --vert-pale:#edf7f2;
+      --vert-clair:#c8edd9; --vert-moyen:#a8dfc4; --vert-doux:#d4f0e2;
+      --texte-fonce:#0d2b1f; --texte-vert:#108c5a;
+      --badge-bg:rgba(10,110,63,0.13); --badge-texte:#0a6e3f;
+      --or:#d4820a; --or-pale:rgba(212,130,10,0.12); --or-bord:#b06a20;
+    }
+    body.dys * { font-family:'OpenDyslexic',Arial,sans-serif !important; line-height:1.9 !important; }
+    @keyframes gradientWave { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    @keyframes btnGlow { 0%{box-shadow:0 0 0 0 rgba(10,110,63,0)} 50%{box-shadow:0 0 0 10px rgba(10,110,63,0.15),0 0 0 22px rgba(10,110,63,0.07)} 100%{box-shadow:0 0 0 0 rgba(10,110,63,0)} }
+    @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    html { height:100%; }
+    body { min-height:100vh; display:flex; align-items:flex-start; justify-content:center; font-family:Arial,sans-serif; overflow-y:auto; }
+    .header { position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:16px 28px;background:rgba(255,255,255,0.55);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.7); }
+    .header-ligne { font-size:18px;font-weight:500;color:var(--texte-fonce);display:flex;align-items:center;gap:10px; }
+    .header-sep { color:var(--vert-fort);font-weight:700; }
+    .header-nom { font-weight:700;color:var(--vert-bord); }
+    .header-dys { position:absolute;right:20px;display:flex;align-items:center;gap:8px;cursor:pointer;padding:6px 14px;border-radius:999px;border:1.5px solid rgba(10,110,63,0.2);background:transparent;font-family:Arial,sans-serif;transition:all 0.2s; }
+    .header-dys:hover { background:rgba(10,110,63,0.07); }
+    .dys-dot { width:30px;height:17px;border-radius:999px;background:#ccc;position:relative;flex-shrink:0;transition:background 0.3s; }
+    .dys-dot::after { content:'';position:absolute;top:2.5px;left:2.5px;width:12px;height:12px;border-radius:50%;background:#fff;transition:transform 0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2); }
+    .header-dys.on .dys-dot { background:var(--vert-fort); }
+    .header-dys.on .dys-dot::after { transform:translateX(13px); }
+    .dys-lbl { font-size:11px;font-weight:700;color:var(--texte-fonce);letter-spacing:0.04em; }
+    .ecran { display:flex;align-items:center;justify-content:center;width:100%;min-height:100vh;padding-top:80px;padding-bottom:40px; }
+    .ecran.cache { display:none; }
+    .fond-vert { background:linear-gradient(135deg,var(--vert-clair),var(--vert-pale),var(--vert-moyen),var(--vert-pale),var(--vert-doux));background-size:400% 400%;animation:gradientWave 8s ease infinite; }
+    .carte { background:rgba(255,255,255,0.62);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.85);border-radius:28px;padding:56px 64px 52px;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:520px;width:90%; }
+    .carte.anime { animation:fadeUp 0.8s cubic-bezier(.22,1,.36,1) both; }
+    .eval-carte { background:rgba(255,255,255,0.70);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.9);border-radius:28px;padding:40px 52px 48px;display:flex;flex-direction:column;align-items:center;gap:0;max-width:600px;width:92%; }
+    .badge { font-size:11px;font-weight:700;color:var(--badge-texte);background:var(--badge-bg);padding:5px 18px;border-radius:999px;letter-spacing:0.07em;text-transform:uppercase; }
+    .titre { font-size:clamp(22px,4vw,30px);font-weight:500;color:var(--texte-fonce);text-align:center;line-height:1.25; }
+    .titre .accent { color:var(--texte-vert); }
+    .texte-intro { font-size:16px;font-weight:400;color:var(--texte-fonce);text-align:center;line-height:1.7;max-width:400px; }
+    .texte-intro strong { color:var(--vert-bord); }
+    .btn { margin-top:22px;padding:15px 54px;border-radius:999px;border:2.5px solid var(--vert-bord);background:transparent;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:0.04em;color:var(--vert-bord);animation:btnGlow 2.2s ease-in-out infinite;transition:background 0.2s,color 0.2s,transform 0.15s;font-family:inherit; }
+    .btn:hover { background:var(--vert-bord);color:#fff;transform:scale(1.05); }
+    .accueil-dys { margin-top:6px;display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 18px;border-radius:999px;border:1.5px solid rgba(10,110,63,0.2);background:transparent;font-family:Arial,sans-serif;transition:all 0.2s; }
+    .accueil-dys:hover { background:rgba(10,110,63,0.06); }
+    .accueil-dys-dot { width:34px;height:19px;border-radius:999px;background:#ccc;position:relative;flex-shrink:0;transition:background 0.3s; }
+    .accueil-dys-dot::after { content:'';position:absolute;top:2.5px;left:2.5px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform 0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2); }
+    .accueil-dys.on .accueil-dys-dot { background:var(--vert-fort); }
+    .accueil-dys.on .accueil-dys-dot::after { transform:translateX(15px); }
+    .accueil-dys-texte { text-align:left; }
+    .accueil-dys-lbl { font-size:12px;font-weight:700;color:var(--texte-fonce);display:block; }
+    .accueil-dys-sub  { font-size:10px;color:#6b7c6b;display:block;margin-top:1px; }
+
+    /* PROGRESSION */
+    .prog-header { width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:28px; }
+    .prog-badge { font-size:13px;font-weight:700;background:var(--or-pale);color:var(--or-bord);padding:5px 18px;border-radius:999px; }
+    .prog-nums { font-size:11px;font-weight:600;color:#c8913a;letter-spacing:0.05em; }
+    .prog-track { width:100%;height:7px;background:rgba(10,110,63,0.12);border-radius:999px;overflow:hidden;margin-bottom:28px; }
+    .prog-fill { height:100%;background:var(--vert-fort);border-radius:999px;transition:width 0.5s cubic-bezier(.22,1,.36,1);width:0%; }
+
+    /* QUESTION */
+    .q-zone { width:100%;background:rgba(212,130,10,0.04);border:1px solid rgba(212,130,10,0.15);border-radius:16px;padding:28px 24px;display:flex;flex-direction:column;align-items:center;gap:22px;animation:fadeIn 0.4s both; }
+    .q-label { font-size:11px;font-weight:700;color:var(--or-bord);letter-spacing:0.08em;text-transform:uppercase; }
+    .q-enonce { font-size:19px;font-weight:600;color:#3d2000;text-align:center;line-height:1.5; }
+    .q-enonce .acc { color:var(--or);font-weight:700; }
+
+    /* Affichage fraction dans l'énoncé */
+    .frac-enonce { display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 6px;gap:3px; }
+    .frac-enonce .fn { font-size:22px;font-weight:700;color:var(--or);line-height:1; }
+    .frac-enonce .fb { height:2.5px;background:var(--or);border-radius:2px;width:100%;min-width:20px; }
+    .frac-enonce .fd { font-size:22px;font-weight:700;color:var(--or);line-height:1; }
+
+    /* Champs réponse */
+    .rep-wrap { display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap; }
+    .rep-frac { display:flex;flex-direction:column;align-items:center;gap:6px; }
+    .rep-input { width:82px;height:54px;border:2px solid rgba(10,110,63,0.3);border-radius:12px;background:rgba(255,255,255,0.85);font-size:26px;font-weight:700;color:var(--texte-fonce);text-align:center;outline:none;font-family:inherit;transition:border-color 0.2s; }
+    .rep-input:focus { border-color:var(--vert-fort); }
+    .rep-input:disabled { background:rgba(10,110,63,0.07);border-color:rgba(10,110,63,0.3);color:#0a6e3f; }
+    .rep-barre { width:82px;height:3px;background:var(--texte-fonce);border-radius:2px; }
+
+    /* Pour questions num seul ou den seul */
+    .rep-single { display:flex;flex-direction:column;align-items:center;gap:6px; }
+    .rep-label-small { font-size:11px;font-weight:700;color:#0a6e3f;letter-spacing:0.06em;text-transform:uppercase; }
+
+    .btn-val { padding:12px 36px;border-radius:999px;border:2px solid var(--vert-bord);background:transparent;font-size:15px;font-weight:700;color:var(--vert-bord);cursor:pointer;font-family:inherit;transition:all 0.2s; }
+    .btn-val:hover { background:var(--vert-bord);color:#fff; }
+    .btn-val:disabled { opacity:0.5;cursor:not-allowed; }
+
+    /* RÉSULTAT */
+    .result-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-top:8px; }
+    .result-item { background:rgba(255,255,255,0.7);border:1px solid rgba(10,110,63,0.15);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px; }
+    .result-item.assigned { border-color:rgba(212,130,10,0.4);background:rgba(212,130,10,0.06); }
+    .result-item.ok { border-color:rgba(16,140,90,0.3);background:rgba(16,140,90,0.06); }
+    .result-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
+    .result-item.assigned .result-dot { background:var(--or); }
+    .result-item.ok .result-dot { background:var(--vert-fort); }
+    .result-titre { font-size:11px;font-weight:600;color:var(--texte-fonce);line-height:1.3; }
+    .result-score { font-size:10px;color:#888;margin-top:1px; }
+
+    .stat-box { display:flex;gap:24px;justify-content:center;margin:8px 0; }
+    .stat-item { text-align:center; }
+    .stat-val { font-size:36px;font-weight:700;line-height:1; }
+    .stat-lbl { font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#888;margin-top:4px; }
+    .stat-item.assigned .stat-val { color:var(--or); }
+    .stat-item.ok .stat-val { color:var(--vert-fort); }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-ligne">
+      <span id="header-lycee">—</span><span class="header-sep">·</span>
+      <span id="header-classe">—</span><span class="header-sep">·</span>
+      <span class="header-nom" id="header-nom">—</span>
+    </div>
+    <button class="header-dys" id="header-dys" onclick="basculerDYS()">
+      <div class="dys-dot"></div><span class="dys-lbl">DYS</span>
+    </button>
+  </div>
+
+  <!-- CHARGEMENT -->
+  <div class="ecran fond-vert" id="ecran-chargement">
+    <div class="carte anime">
+      <div class="badge">Évaluation diagnostique</div>
+      <div class="titre">Chargement<br><span class="accent">en cours…</span></div>
+    </div>
+  </div>
+
+  <!-- ACCUEIL -->
+  <div class="ecran fond-vert cache" id="ecran-accueil">
+    <div class="carte anime">
+      <div class="badge">Évaluation diagnostique · Fractions</div>
+      <div class="titre">Bienvenue<br><span class="accent" id="prenom-accueil"></span> !</div>
+      <div class="texte-intro">
+        Tu vas répondre à <strong>30 questions</strong> sur les fractions.<br><br>
+        Pour chaque question, écris ta réponse dans les cases.<br>
+        Il n'y a <strong>pas de retour en arrière</strong> possible.<br><br>
+        Tes résultats nous permettront de te proposer les fiches adaptées.
+      </div>
+      <button class="btn" onclick="allerVers('ecran-accueil','ecran-eval');setTimeout(chargerQuestion,500)">Commencer →</button>
+      <button class="accueil-dys" id="accueil-dys" onclick="basculerDYS()">
+        <div class="accueil-dys-dot"></div>
+        <div class="accueil-dys-texte">
+          <span class="accueil-dys-lbl">Mode DYS</span>
+          <span class="accueil-dys-sub">Police et espacement adaptés</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ÉVALUATION -->
+  <div class="ecran fond-vert cache" id="ecran-eval">
+    <div class="eval-carte">
+      <div class="prog-header">
+        <div class="prog-badge" id="prog-badge">Question 1 / 30</div>
+        <div class="prog-nums" id="prog-nums">Fractions</div>
+      </div>
+      <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+      <div class="q-zone" id="q-zone"></div>
+    </div>
+  </div>
+
+  <!-- RÉSULTAT -->
+  <div class="ecran fond-vert cache" id="ecran-resultat">
+    <div class="carte anime" style="max-width:560px;gap:18px;">
+      <div class="badge">Évaluation terminée ✓</div>
+      <div class="titre">Voilà tes résultats<br><span class="accent" id="prenom-res"></span></div>
+      <div class="stat-box">
+        <div class="stat-item assigned">
+          <div class="stat-val" id="res-nb-fiches">—</div>
+          <div class="stat-lbl">Fiches à travailler</div>
+        </div>
+        <div class="stat-item ok">
+          <div class="stat-val" id="res-nb-ok">—</div>
+          <div class="stat-lbl">Notions maîtrisées</div>
+        </div>
+      </div>
+      <div style="font-size:14px;font-weight:500;color:var(--texte-fonce);text-align:center;line-height:1.6;" id="res-message"></div>
+      <div class="result-grid" id="result-grid"></div>
+      <button class="btn" onclick="retourEspace()">Voir mes fiches →</button>
+    </div>
+  </div>
+
+<script>
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxlBMjVXIg58lsopoeQ5sEZW-jcQIOrOtnWwCGVtHLGjcmpi9exaYZ3oAEre4deZum2/exec';
+
+  const params = new URLSearchParams(window.location.search);
+  const nom       = params.get('nom')        || 'Élève';
+  const classe    = params.get('classe')     || '—';
+  const lycee     = params.get('lycee')      || '—';
+  const email     = params.get('email')      || '';
+  const prof      = params.get('prof')       || '';
+  const profEmail = params.get('prof_email') || '';
+  const espaceUrl = params.get('espace_url') || '';
+
+  document.getElementById('header-lycee').textContent = lycee;
+  document.getElementById('header-classe').textContent = classe;
+  document.getElementById('header-nom').textContent = nom;
+  document.getElementById('prenom-accueil').textContent = nom.split(' ')[0];
+  document.getElementById('prenom-res').textContent = nom.split(' ')[0];
+
+  let dysActif = false;
+  function basculerDYS() {
+    dysActif = !dysActif;
+    document.body.style.transition = 'opacity 0.2s'; document.body.style.opacity = '0';
+    setTimeout(() => {
+      document.body.classList.toggle('dys', dysActif);
+      ['header-dys','accueil-dys'].forEach(id => { const el=document.getElementById(id); if(el) el.classList.toggle('on', dysActif); });
+      document.body.style.opacity = '1';
+    }, 200);
+  }
+
+  // ── DONNÉES : 30 questions ───────────────────────────────────
+  // type: 'frac' = num+den, 'num' = numérateur seul, 'den' = dénominateur seul
+  // Pour les questions num/den seul : rn=valeur, rd=null
+  // fiche_id : identifiant de la fiche associée
+  // bloc : 1-10 (correspond à F1-F10, 3 questions par bloc)
+
+  const QUESTIONS = [
+    // F1 — Comprendre les fractions
+    { q:1,  bloc:1, fiche:'fractions_comprendre',        enonce:'Quel est le <span class="acc">numérateur</span> de cette fraction ?', affiche:{n:3,d:7}, type:'num', rn:3, rd:null },
+    { q:2,  bloc:1, fiche:'fractions_comprendre',        enonce:'Quel est le <span class="acc">dénominateur</span> de cette fraction ?', affiche:{n:5,d:8}, type:'den', rn:null, rd:8 },
+    { q:3,  bloc:1, fiche:'fractions_comprendre',        enonce:'Écris la fraction qui représente <span class="acc">4 parts sur 9</span>.', affiche:null, type:'frac', rn:4, rd:9 },
+    // F2 — Reconnaître deux fractions égales
+    { q:4,  bloc:2, fiche:'fractions_reconnaitre_egales', enonce:'Complète : <span class="acc">1/3 = ?/6</span>. Écris la fraction manquante.', affiche:null, type:'frac', rn:2, rd:6 },
+    { q:5,  bloc:2, fiche:'fractions_reconnaitre_egales', enonce:'Complète : <span class="acc">2/5 = ?/10</span>. Écris la fraction manquante.', affiche:null, type:'frac', rn:4, rd:10 },
+    { q:6,  bloc:2, fiche:'fractions_reconnaitre_egales', enonce:'Complète : <span class="acc">3/4 = ?/8</span>. Écris la fraction manquante.', affiche:null, type:'frac', rn:6, rd:8 },
+    // F3 — Rendre une fraction irréductible
+    { q:7,  bloc:3, fiche:'fractions_irreductible',       enonce:'Simplifie la fraction :', affiche:{n:6,d:9},  type:'frac', rn:2, rd:3 },
+    { q:8,  bloc:3, fiche:'fractions_irreductible',       enonce:'Simplifie la fraction :', affiche:{n:4,d:8},  type:'frac', rn:1, rd:2 },
+    { q:9,  bloc:3, fiche:'fractions_irreductible',       enonce:'Simplifie la fraction :', affiche:{n:6,d:10}, type:'frac', rn:3, rd:5 },
+    // F4 — Additionner/soustraire même dénominateur
+    { q:10, bloc:4, fiche:'fractions_add_meme_denom',     enonce:'Calcule :', op:{n1:2,d1:7,signe:'+',n2:3,d2:7}, type:'frac', rn:5, rd:7 },
+    { q:11, bloc:4, fiche:'fractions_add_meme_denom',     enonce:'Calcule :', op:{n1:5,d1:9,signe:'-',n2:2,d2:9}, type:'frac', rn:3, rd:9 },
+    { q:12, bloc:4, fiche:'fractions_add_meme_denom',     enonce:'Calcule :', op:{n1:3,d1:8,signe:'+',n2:4,d2:8}, type:'frac', rn:7, rd:8 },
+    // F5 — Dénominateur commun (1)
+    { q:13, bloc:5, fiche:'fractions_denom_commun_1',     enonce:'Calcule :', op:{n1:1,d1:2,signe:'+',n2:1,d2:4}, type:'frac', rn:3, rd:4 },
+    { q:14, bloc:5, fiche:'fractions_denom_commun_1',     enonce:'Calcule :', op:{n1:1,d1:3,signe:'+',n2:1,d2:6}, type:'frac', rn:3, rd:6 },
+    { q:15, bloc:5, fiche:'fractions_denom_commun_1',     enonce:'Calcule :', op:{n1:3,d1:4,signe:'-',n2:1,d2:8}, type:'frac', rn:5, rd:8 },
+    // F6 — Dénominateur commun (2)
+    { q:16, bloc:6, fiche:'fractions_denom_commun_2',     enonce:'Calcule :', op:{n1:1,d1:2,signe:'+',n2:1,d2:3}, type:'frac', rn:5, rd:6 },
+    { q:17, bloc:6, fiche:'fractions_denom_commun_2',     enonce:'Calcule :', op:{n1:1,d1:3,signe:'+',n2:1,d2:4}, type:'frac', rn:7, rd:12 },
+    { q:18, bloc:6, fiche:'fractions_denom_commun_2',     enonce:'Calcule :', op:{n1:3,d1:4,signe:'-',n2:1,d2:3}, type:'frac', rn:5, rd:12 },
+    // F7 — Multiplier par un entier
+    { q:19, bloc:7, fiche:'fractions_mult_entier',        enonce:'Calcule :', opE:{n:2,d:5,ent:3}, type:'frac', rn:6, rd:5 },
+    { q:20, bloc:7, fiche:'fractions_mult_entier',        enonce:'Calcule :', opE:{n:1,d:4,ent:5}, type:'frac', rn:5, rd:4 },
+    { q:21, bloc:7, fiche:'fractions_mult_entier',        enonce:'Calcule :', opE:{n:3,d:7,ent:2}, type:'frac', rn:6, rd:7 },
+    // F8 — Multiplier deux fractions
+    { q:22, bloc:8, fiche:'fractions_mult_fractions',     enonce:'Calcule :', opF:{n1:1,d1:2,n2:1,d2:3}, type:'frac', rn:1, rd:6 },
+    { q:23, bloc:8, fiche:'fractions_mult_fractions',     enonce:'Calcule :', opF:{n1:2,d1:3,n2:3,d2:4}, type:'frac', rn:6, rd:12 },
+    { q:24, bloc:8, fiche:'fractions_mult_fractions',     enonce:'Calcule :', opF:{n1:1,d1:4,n2:2,d2:5}, type:'frac', rn:2, rd:20 },
+    // F9 — Inverse
+    { q:25, bloc:9, fiche:'fractions_inverse',            enonce:'Écris l\'inverse de :', affiche:{n:3,d:4}, type:'frac', rn:4, rd:3 },
+    { q:26, bloc:9, fiche:'fractions_inverse',            enonce:'Écris l\'inverse de :', affiche:{n:2,d:5}, type:'frac', rn:5, rd:2 },
+    { q:27, bloc:9, fiche:'fractions_inverse',            enonce:'Écris l\'inverse de :', affiche:{n:7,d:3}, type:'frac', rn:3, rd:7 },
+    // F10 — Division
+    { q:28, bloc:10, fiche:'fractions_division',           enonce:'Calcule :', opD:{n1:1,d1:2,n2:1,d2:3}, type:'frac', rn:3, rd:2 },
+    { q:29, bloc:10, fiche:'fractions_division',           enonce:'Calcule :', opD:{n1:2,d1:3,n2:1,d2:4}, type:'frac', rn:8, rd:3 },
+    { q:30, bloc:10, fiche:'fractions_division',           enonce:'Calcule :', opD:{n1:3,d1:4,n2:3,d2:2}, type:'frac', rn:6, rd:12 },
+  ];
+
+  const NOMS_FICHES = {
+    'fractions_comprendre':        'Comprendre les fractions',
+    'fractions_reconnaitre_egales':'Reconnaître deux fractions égales',
+    'fractions_irreductible':      'Rendre une fraction irréductible',
+    'fractions_add_meme_denom':    'Addition/soustraction — même dénominateur',
+    'fractions_denom_commun_1':    'Dénominateur commun (1)',
+    'fractions_denom_commun_2':    'Dénominateur commun (2)',
+    'fractions_mult_entier':       'Multiplier par un entier',
+    'fractions_mult_fractions':    'Multiplier deux fractions',
+    'fractions_inverse':           'L\'inverse d\'une fraction',
+    'fractions_division':          'Diviser par une fraction',
+  };
+
+  // ── ÉTAT ────────────────────────────────────────────────────
+  let qIdx = 0;         // index 0-29
+  let reponses = [];    // tableau de {fiche, bloc, repondu, correct}
+  let enAttente = false;
+
+  // ── CHARGEMENT INITIAL ──────────────────────────────────────
+  async function verifierDejaFait() {
+    if (!email) { allerVers('ecran-chargement','ecran-accueil'); return; }
+    const timeout = setTimeout(() => allerVers('ecran-chargement','ecran-accueil'), 8000);
+    try {
+      const res = await fetch(APPS_SCRIPT_URL + '?type=evaluation&email=' + encodeURIComponent(email));
+      const data = await res.json();
+      clearTimeout(timeout);
+      if (data.status === 'ok' && data.deja_fait) {
+        // Déjà évalué : aller directement aux résultats sauvegardés
+        afficherResultats(data.resultats);
+        allerVers('ecran-chargement','ecran-resultat');
+      } else {
+        allerVers('ecran-chargement','ecran-accueil');
+      }
+    } catch(e) { clearTimeout(timeout); allerVers('ecran-chargement','ecran-accueil'); }
+  }
+  verifierDejaFait();
+
+  // ── AFFICHAGE QUESTION ──────────────────────────────────────
+  function chargerQuestion() {
+    enAttente = false;
+    const q = QUESTIONS[qIdx];
+    document.getElementById('prog-badge').textContent = 'Question ' + (qIdx+1) + ' / ' + QUESTIONS.length;
+    document.getElementById('prog-fill').style.width = (qIdx / QUESTIONS.length * 100) + '%';
+    document.getElementById('prog-nums').textContent = (qIdx+1) + ' question' + (qIdx>0?'s':'') + ' répondue' + (qIdx>0?'s':'');
+
+    // Construire le HTML de la question
+    let html = '<div class="q-label">Question ' + (qIdx+1) + '</div>';
+    html += '<div class="q-enonce">' + q.enonce;
+
+    // Afficher fraction dans l'énoncé si besoin
+    if (q.affiche) {
+      html += ' <span class="frac-enonce"><span class="fn">' + q.affiche.n + '</span><span class="fb"></span><span class="fd">' + q.affiche.d + '</span></span>';
+    }
+    html += '</div>';
+
+    // Afficher l'opération si besoin
+    if (q.op) {
+      html += '<div style="display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;">';
+      html += fracHTML(q.op.n1, q.op.d1, '#3d2000');
+      html += '<span style="font-size:32px;font-weight:700;color:#b06a20;">' + q.op.signe + '</span>';
+      html += fracHTML(q.op.n2, q.op.d2, '#3d2000');
+      html += '</div>';
+    }
+    if (q.opE) {
+      html += '<div style="display:flex;align-items:center;gap:12px;justify-content:center;">';
+      html += fracHTML(q.opE.n, q.opE.d, '#3d2000');
+      html += '<span style="font-size:32px;font-weight:700;color:#b06a20;">×</span>';
+      html += '<span style="font-size:40px;font-weight:700;color:#3d2000;">' + q.opE.ent + '</span>';
+      html += '</div>';
+    }
+    if (q.opF) {
+      html += '<div style="display:flex;align-items:center;gap:12px;justify-content:center;">';
+      html += fracHTML(q.opF.n1, q.opF.d1, '#3d2000');
+      html += '<span style="font-size:32px;font-weight:700;color:#b06a20;">×</span>';
+      html += fracHTML(q.opF.n2, q.opF.d2, '#3d2000');
+      html += '</div>';
+    }
+    if (q.opD) {
+      html += '<div style="display:flex;align-items:center;gap:12px;justify-content:center;">';
+      html += fracHTML(q.opD.n1, q.opD.d1, '#3d2000');
+      html += '<span style="font-size:32px;font-weight:700;color:#b06a20;">÷</span>';
+      html += fracHTML(q.opD.n2, q.opD.d2, '#3d2000');
+      html += '</div>';
+    }
+
+    // Champs de réponse
+    html += '<div class="rep-wrap">';
+    if (q.type === 'frac') {
+      html += '<div class="rep-frac">';
+      html += '<input type="number" id="inp-n" class="rep-input" placeholder="?" />';
+      html += '<div class="rep-barre"></div>';
+      html += '<input type="number" id="inp-d" class="rep-input" placeholder="?" disabled />';
+      html += '</div>';
+    } else if (q.type === 'num') {
+      html += '<div class="rep-single"><div class="rep-label-small">Numérateur</div><input type="number" id="inp-n" class="rep-input" placeholder="?" /></div>';
+    } else if (q.type === 'den') {
+      html += '<div class="rep-single"><div class="rep-label-small">Dénominateur</div><input type="number" id="inp-n" class="rep-input" placeholder="?" /></div>';
+    }
+    html += '<button class="btn-val" id="btn-val" onclick="validerReponse()">Valider →</button>';
+    html += '</div>';
+
+    const zone = document.getElementById('q-zone');
+    zone.style.animation = 'none'; zone.offsetHeight;
+    zone.style.animation = 'fadeIn 0.4s both';
+    zone.innerHTML = html;
+
+    // Focus et Enter
+    setTimeout(() => {
+      const inp = document.getElementById('inp-n');
+      if (inp) {
+        inp.focus();
+        inp.addEventListener('keydown', ev => { if(ev.key==='Enter') validerReponse(); });
+      }
+      const inpD = document.getElementById('inp-d');
+      if (inpD) inpD.addEventListener('keydown', ev => { if(ev.key==='Enter') validerReponse(); });
+    }, 200);
+  }
+
+  function fracHTML(n, d, color) {
+    return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;">' +
+      '<span style="font-size:36px;font-weight:700;color:' + color + ';line-height:1;">' + n + '</span>' +
+      '<div style="height:3px;background:' + color + ';border-radius:2px;width:44px;"></div>' +
+      '<span style="font-size:36px;font-weight:700;color:' + color + ';line-height:1;">' + d + '</span>' +
+      '</div>';
+  }
+
+  // ── VALIDATION ──────────────────────────────────────────────
+  function validerReponse() {
+    if (enAttente) return;
+    const q = QUESTIONS[qIdx];
+    const inpN = document.getElementById('inp-n');
+    const inpD = document.getElementById('inp-d');
+
+    // Si frac et numérateur pas encore validé
+    if (q.type === 'frac' && inpD && inpD.disabled) {
+      const vn = parseInt(inpN.value);
+      if (isNaN(vn)) return;
+      inpN.disabled = true;
+      inpD.disabled = false;
+      inpD.style.borderColor = 'rgba(10,110,63,0.4)';
+      setTimeout(() => { inpD.focus(); }, 150);
+      return;
+    }
+
+    // Récupérer valeurs finales
+    let repN = inpN ? parseInt(inpN.value) : null;
+    let repD = inpD && !inpD.disabled ? parseInt(inpD.value) : null;
+    if (isNaN(repN)) repN = null;
+    if (isNaN(repD)) repD = null;
+
+    // Vérifier correction
+    let correct = false;
+    if (q.type === 'frac') {
+      correct = (repN === q.rn && repD === q.rd);
+    } else if (q.type === 'num') {
+      correct = (repN === q.rn);
+    } else if (q.type === 'den') {
+      correct = (repN === q.rd);
+    }
+
+    reponses.push({ fiche: q.fiche, bloc: q.bloc, correct });
+
+    // Désactiver champs
+    if (inpN) inpN.disabled = true;
+    if (inpD) inpD.disabled = true;
+    document.getElementById('btn-val').disabled = true;
+
+    // Passer à la suivante
+    enAttente = true;
+    setTimeout(() => {
+      qIdx++;
+      if (qIdx >= QUESTIONS.length) {
+        terminerEvaluation();
+      } else {
+        chargerQuestion();
+      }
+    }, 400);
+  }
+
+  // ── FIN D'ÉVALUATION ────────────────────────────────────────
+  function terminerEvaluation() {
+    // Calculer scores par bloc
+    const blocs = {};
+    reponses.forEach(r => {
+      if (!blocs[r.fiche]) blocs[r.fiche] = { fiche: r.fiche, correct: 0, total: 0 };
+      blocs[r.fiche].total++;
+      if (r.correct) blocs[r.fiche].correct++;
+    });
+
+    const resultats = Object.values(blocs).map(b => ({
+      fiche: b.fiche,
+      score: b.correct,
+      total: b.total,
+      assigne: b.correct < 2  // < 2/3 → assignée
+    }));
+
+    // Sauvegarder
+    if (email) {
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          type: 'sauvegarder_evaluation',
+          email, nom, classe, etablissement: lycee, prof, prof_email: profEmail,
+          resultats: resultats
+        })
+      }).catch(() => {});
+    }
+
+    afficherResultats(resultats);
+    allerVers('ecran-eval', 'ecran-resultat');
+  }
+
+  function afficherResultats(resultats) {
+    const nbAssignes = resultats.filter(r => r.assigne).length;
+    const nbOk = resultats.filter(r => !r.assigne).length;
+    document.getElementById('res-nb-fiches').textContent = nbAssignes;
+    document.getElementById('res-nb-ok').textContent = nbOk;
+
+    if (nbAssignes === 0) {
+      document.getElementById('res-message').textContent = '🎉 Excellent ! Tu maîtrises toutes les notions sur les fractions.';
+    } else if (nbAssignes <= 3) {
+      document.getElementById('res-message').textContent = 'Bon travail ! Quelques notions sont à consolider. Tes fiches sont prêtes dans ton espace.';
+    } else {
+      document.getElementById('res-message').textContent = 'Pas d\'inquiétude ! Les fiches ci-dessous t\'aideront à progresser étape par étape.';
+    }
+
+    let html = '';
+    resultats.forEach(r => {
+      const cls = r.assigne ? 'assigned' : 'ok';
+      const icone = r.assigne ? '📋' : '✓';
+      html += '<div class="result-item ' + cls + '">';
+      html += '<div class="result-dot"></div>';
+      html += '<div><div class="result-titre">' + icone + ' ' + NOMS_FICHES[r.fiche] + '</div>';
+      html += '<div class="result-score">' + r.score + '/3 bonnes réponses</div></div>';
+      html += '</div>';
+    });
+    document.getElementById('result-grid').innerHTML = html;
+  }
+
+  function retourEspace() {
+    if (espaceUrl) window.location.href = espaceUrl;
+    else window.history.back();
+  }
+
+  function allerVers(a, b) {
+    const d=document.getElementById(a), ar=document.getElementById(b);
+    d.style.transition='opacity 0.5s ease'; d.style.opacity='0';
+    setTimeout(() => {
+      d.classList.add('cache'); d.style.opacity='1';
+      ar.classList.remove('cache'); ar.style.opacity='0';
+      ar.style.transition='opacity 0.5s ease';
+      setTimeout(() => { ar.style.opacity='1'; }, 20);
+    }, 500);
+  }
+</script>
+</body>
+</html>
