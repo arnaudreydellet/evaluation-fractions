@@ -182,7 +182,7 @@
       </div>
       <div style="font-size:14px;font-weight:500;color:var(--texte-fonce);text-align:center;line-height:1.6;" id="res-message"></div>
       <div class="result-grid" id="result-grid"></div>
-      <button class="btn" onclick="retourEspace()">Voir mes fiches →</button>
+      <button style="margin-top:22px;padding:15px 54px;border-radius:999px;border:2.5px solid var(--vert-bord);background:transparent;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:0.04em;color:var(--vert-bord);transition:background 0.2s,color 0.2s;font-family:inherit;" onmouseover="this.style.background='var(--vert-bord)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--vert-bord)'" onclick="retourEspace()">Voir mes fiches →</button>
     </div>
   </div>
 
@@ -504,8 +504,8 @@
   }
 
   function retourEspace() {
-    if (espaceUrl) window.location.href = espaceUrl;
-    else window.history.back();
+    const espace = 'https://arnaudreydellet.github.io/espace-eleve/';
+    window.location.href = espace;
   }
 
   function allerVers(a, b) {
