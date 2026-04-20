@@ -216,7 +216,7 @@
     { q:8,  bloc:3, fiche:'fractions_irreductible',       enonce:'Simplifie la fraction :', affiche:{n:4,d:8},  type:'frac', rn:1, rd:2 },
     { q:9,  bloc:3, fiche:'fractions_irreductible',       enonce:'Simplifie la fraction :', affiche:{n:6,d:10}, type:'frac', rn:3, rd:5 },
     { q:10, bloc:4, fiche:'fractions_add_meme_denom',     enonce:'Calcule :', op:{n1:2,d1:7,signe:'+',n2:3,d2:7}, type:'frac', rn:5, rd:7, inline:true },
-    { q:11, bloc:4, fiche:'fractions_add_meme_denom',     enonce:'Calcule :', op:{n1:5,d1:9,signe:'-',n2:2,d2:9}, type:'frac', rn:3, rd:9, inline:true },
+    { q:11, bloc:4, fiche:'fractions_add_meme_denom',     enonce:'Calcule :', op:{n1:5,d1:9,signe:'-',n2:2,d2:9}, type:'frac', rn:3, rd:9, alt:[{rn:1,rd:3}], inline:true },
     { q:13, bloc:5, fiche:'fractions_denom_commun_1',     enonce:'Calcule :', op:{n1:1,d1:2,signe:'+',n2:1,d2:4}, type:'frac', rn:3, rd:4, inline:true },
     { q:14, bloc:5, fiche:'fractions_denom_commun_1',     enonce:'Calcule :', op:{n1:1,d1:3,signe:'+',n2:1,d2:6}, type:'frac', rn:3, rd:6, inline:true },
     { q:16, bloc:6, fiche:'fractions_denom_commun_2',     enonce:'Calcule :', op:{n1:1,d1:2,signe:'+',n2:1,d2:3}, type:'frac', rn:5, rd:6, inline:true },
@@ -418,7 +418,13 @@
     if (isNaN(repD)) repD = null;
 
     let correct = false;
-    if (q.type === 'frac')      correct = (repN === q.rn && repD === q.rd);
+    if (q.type === 'frac') {
+      correct = (repN === q.rn && repD === q.rd);
+      // Vérifier les réponses alternatives (ex: fraction non simplifiée)
+      if (!correct && q.alt) {
+        correct = q.alt.some(a => repN === a.rn && repD === a.rd);
+      }
+    }
     else if (q.type === 'frac_num') correct = (repN === q.rn);
     else if (q.type === 'num')  correct = (repN === q.rn);
     else if (q.type === 'den')  correct = (repN === q.rd);
