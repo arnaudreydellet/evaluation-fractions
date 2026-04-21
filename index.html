@@ -14,6 +14,7 @@
       --texte-fonce:#1A1917; --texte-vert:#1A2C5B;
       --badge-bg:rgba(26,44,91,0.10); --badge-texte:#1A2C5B;
       --or:#1A2C5B; --or-pale:rgba(26,44,91,0.08); --or-bord:#2C4A96;
+      --reeval-green:#1A7A5E; --reeval-green-bg:rgba(26,122,94,0.10); --reeval-green-bord:#1A7A5E;
     }
     body.dys * { font-family:'OpenDyslexic',Arial,sans-serif !important; line-height:1.9 !important; }
     @keyframes gradientWave { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
@@ -36,10 +37,13 @@
     .carte.anime { animation:fadeUp 0.8s cubic-bezier(.22,1,.36,1) both; }
     .eval-carte { background:rgba(255,255,255,0.70);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.9);border-radius:28px;padding:40px 52px 48px;display:flex;flex-direction:column;align-items:center;gap:0;max-width:640px;width:92%; }
     .badge { font-size:11px;font-weight:700;color:var(--badge-texte);background:var(--badge-bg);padding:5px 18px;border-radius:999px;letter-spacing:0.07em;text-transform:uppercase; }
+    .badge.reeval { color:var(--reeval-green);background:var(--reeval-green-bg); }
     .titre { font-size:clamp(22px,4vw,30px);font-weight:500;color:var(--texte-fonce);text-align:center;line-height:1.25; }
     .titre .accent { color:var(--texte-vert); }
+    .titre .accent.reeval-accent { color:var(--reeval-green); }
     .texte-intro { font-size:16px;font-weight:400;color:var(--texte-fonce);text-align:center;line-height:1.7;max-width:420px; }
     .texte-intro strong { color:var(--vert-bord); }
+    .texte-intro strong.reeval-strong { color:var(--reeval-green); }
 
     /* Bloc brouillon mis en évidence */
     .brouillon-alert {
@@ -52,18 +56,27 @@
       align-items:flex-start;
       gap:12px;
     }
+    .brouillon-alert.reeval {
+      background:linear-gradient(135deg,rgba(26,122,94,0.08),rgba(26,122,94,0.05));
+      border-color:var(--reeval-green);
+    }
     .brouillon-ico { font-size:26px; flex-shrink:0; margin-top:2px; }
     .brouillon-body { flex:1; }
     .brouillon-titre { font-size:14px;font-weight:700;color:#1A2C5B;margin-bottom:4px;letter-spacing:0.01em; }
+    .brouillon-alert.reeval .brouillon-titre { color:var(--reeval-green); }
     .brouillon-desc { font-size:13px;font-weight:500;color:#1A1917;line-height:1.5; }
 
     .btn { margin-top:22px;padding:15px 54px;border-radius:999px;border:2.5px solid var(--vert-bord);background:transparent;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:0.04em;color:var(--vert-bord);animation:btnGlow 2.2s ease-in-out infinite;transition:background 0.2s,color 0.2s,transform 0.15s;font-family:inherit; }
     .btn:hover { background:var(--vert-bord);color:#fff;transform:scale(1.05); }
+    .btn.reeval { border-color:var(--reeval-green);color:var(--reeval-green); }
+    .btn.reeval:hover { background:var(--reeval-green);color:#fff; }
     .prog-header { width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:28px; }
     .prog-badge { font-size:13px;font-weight:700;background:rgba(26,44,91,0.08);color:#1A2C5B;padding:5px 18px;border-radius:999px; }
+    .prog-badge.reeval { background:var(--reeval-green-bg);color:var(--reeval-green); }
     .prog-nums { font-size:11px;font-weight:600;color:#5A6E99;letter-spacing:0.05em; }
     .prog-track { width:100%;height:7px;background:rgba(26,44,91,0.10);border-radius:999px;overflow:hidden;margin-bottom:28px; }
     .prog-fill { height:100%;background:var(--vert-fort);border-radius:999px;transition:width 0.5s cubic-bezier(.22,1,.36,1);width:0%; }
+    .prog-fill.reeval { background:var(--reeval-green); }
     .q-zone { width:100%;background:rgba(26,44,91,0.03);border:1px solid rgba(26,44,91,0.10);border-radius:16px;padding:28px 24px;display:flex;flex-direction:column;align-items:center;gap:22px;animation:fadeIn 0.4s both; }
     .q-label { font-size:11px;font-weight:700;color:#2C4A96;letter-spacing:0.08em;text-transform:uppercase; }
     .q-enonce { font-size:19px;font-weight:600;color:#1A1917;text-align:center;line-height:1.5; }
@@ -95,6 +108,8 @@
     .btn-val { padding:12px 36px;border-radius:999px;border:2px solid var(--vert-bord);background:transparent;font-size:15px;font-weight:700;color:var(--vert-bord);cursor:pointer;font-family:inherit;transition:all 0.2s; }
     .btn-val:hover { background:var(--vert-bord);color:#fff; }
     .btn-val:disabled { opacity:0.5;cursor:not-allowed; }
+    .btn-val.reeval { border-color:var(--reeval-green);color:var(--reeval-green); }
+    .btn-val.reeval:hover { background:var(--reeval-green);color:#fff; }
     .result-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-top:8px; }
     .result-item { background:rgba(255,255,255,0.7);border:1px solid rgba(10,110,63,0.15);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px; }
     .result-item.assigned { border-color:rgba(26,44,91,0.25);background:rgba(26,44,91,0.04); }
@@ -124,23 +139,23 @@
 
   <div class="ecran fond-vert" id="ecran-chargement">
     <div class="carte anime">
-      <div class="badge">Évaluation diagnostique</div>
+      <div class="badge" id="chargement-badge">Évaluation diagnostique</div>
       <div class="titre">Chargement<br><span class="accent">en cours…</span></div>
     </div>
   </div>
 
   <div class="ecran fond-vert cache" id="ecran-accueil">
     <div class="carte anime">
-      <div class="badge">Évaluation diagnostique · Fractions</div>
-      <div class="titre">Bienvenue<br><span class="accent" id="prenom-accueil"></span> !</div>
-      <div class="texte-intro">
+      <div class="badge" id="accueil-badge">Évaluation diagnostique · Fractions</div>
+      <div class="titre" id="accueil-titre">Bienvenue<br><span class="accent" id="prenom-accueil"></span> !</div>
+      <div class="texte-intro" id="accueil-intro">
         Tu vas répondre à <strong>27 questions</strong> sur les fractions.<br><br>
         Pour chaque question, écris ta réponse dans les cases.<br>
         Il n'y a <strong>pas de retour en arrière</strong> possible.<br><br>
         Tes résultats nous permettront de te proposer les fiches adaptées.
       </div>
 
-      <div class="brouillon-alert">
+      <div class="brouillon-alert" id="brouillon-alert">
         <div class="brouillon-ico">✏️</div>
         <div class="brouillon-body">
           <div class="brouillon-titre">⚠️ Brouillon indispensable !</div>
@@ -148,7 +163,7 @@
         </div>
       </div>
 
-      <button class="btn" onclick="allerVers('ecran-accueil','ecran-eval');setTimeout(chargerQuestion,500)">J'ai mon brouillon, je commence →</button>
+      <button class="btn" id="btn-commencer" onclick="allerVers('ecran-accueil','ecran-eval');setTimeout(chargerQuestion,500)">J'ai mon brouillon, je commence →</button>
     </div>
   </div>
 
@@ -165,7 +180,7 @@
 
   <div class="ecran fond-vert cache" id="ecran-resultat">
     <div class="carte anime" style="max-width:560px;gap:18px;">
-      <div class="badge">Évaluation terminée ✓</div>
+      <div class="badge" id="resultat-badge">Évaluation terminée ✓</div>
       <div class="titre">Voilà tes résultats<br><span class="accent" id="prenom-res"></span></div>
       <div class="stat-box">
         <div class="stat-item assigned">
@@ -193,6 +208,8 @@
   const prof      = params.get('prof')       || '';
   const profEmail = params.get('prof_email') || '';
   const dysActif  = params.get('dys') === '1';
+  // ⚠ NOUVEAU : paramètre reeval pour forcer la ré-évaluation
+  const isReeval  = params.get('reeval') === '1';
 
   document.getElementById('header-lycee').textContent = lycee;
   document.getElementById('header-classe').textContent = classe;
@@ -203,6 +220,39 @@
   if (dysActif) {
     document.body.classList.add('dys');
     document.getElementById('header-dys-badge').classList.add('visible');
+  }
+
+  // ⚠ MODE RÉÉVALUATION : applique le thème vert et change les textes
+  if (isReeval) {
+    // Badge chargement
+    document.getElementById('chargement-badge').classList.add('reeval');
+    document.getElementById('chargement-badge').textContent = 'Évaluation de progression';
+
+    // Badge + titre accueil
+    document.getElementById('accueil-badge').classList.add('reeval');
+    document.getElementById('accueil-badge').textContent = 'Évaluation de progression · Fractions';
+    document.getElementById('accueil-titre').innerHTML = 'Mesure de tes progrès<br><span class="accent reeval-accent" id="prenom-accueil">' + nom.split(' ')[0] + ' !</span>';
+
+    // Texte d'intro adapté
+    document.getElementById('accueil-intro').innerHTML =
+      'Tu vas <strong class="reeval-strong">repasser l\'évaluation diagnostique</strong> pour mesurer tes progrès après ton travail sur les fiches de remédiation.<br><br>' +
+      'Les <strong>27 mêmes questions</strong> vont te permettre de voir concrètement l\'évolution de ton score.<br><br>' +
+      'Il n\'y a <strong>pas de retour en arrière</strong> possible.';
+
+    // Bloc brouillon en vert
+    document.getElementById('brouillon-alert').classList.add('reeval');
+
+    // Bouton commencer en vert
+    document.getElementById('btn-commencer').classList.add('reeval');
+    document.getElementById('btn-commencer').textContent = 'J\'ai mon brouillon, je commence →';
+
+    // Éléments de l'écran question
+    document.getElementById('prog-badge').classList.add('reeval');
+    document.getElementById('prog-fill').classList.add('reeval');
+
+    // Badge résultat
+    document.getElementById('resultat-badge').classList.add('reeval');
+    document.getElementById('resultat-badge').textContent = 'Évaluation de progression terminée ✓';
   }
 
   const QUESTIONS = [
@@ -254,6 +304,13 @@
 
   async function verifierDejaFait() {
     if (!email) { allerVers('ecran-chargement','ecran-accueil'); return; }
+
+    // ⚠ NOUVEAU : si reeval=1, on saute la vérification et on lance directement l'évaluation
+    if (isReeval) {
+      allerVers('ecran-chargement','ecran-accueil');
+      return;
+    }
+
     const timeout = setTimeout(() => allerVers('ecran-chargement','ecran-accueil'), 8000);
     try {
       const res = await fetch(APPS_SCRIPT_URL + '?type=evaluation&email=' + encodeURIComponent(email));
@@ -302,6 +359,8 @@
     }
     html += '</div>';
 
+    const btnValClass = isReeval ? 'btn-val reeval' : 'btn-val';
+
     // ── MODE INLINE : calcul + = + cases sur une seule ligne ──
     if (q.inline) {
       html += '<div class="calcul-ligne">';
@@ -342,7 +401,7 @@
       html += repFracInlineHTML();
 
       // Bouton valider sur la ligne
-      html += '<button class="btn-val" id="btn-val" onclick="validerReponse()">Valider →</button>';
+      html += '<button class="' + btnValClass + '" id="btn-val" onclick="validerReponse()">Valider →</button>';
       html += '</div>';
 
     } else {
@@ -373,9 +432,9 @@
         html += '<div class="rep-single"><div class="rep-label-small">Dénominateur</div><input type="number" id="inp-n" class="rep-input" placeholder="?" /></div>';
       }
       if (!q.fracEgale) {
-        html += '<button class="btn-val" id="btn-val" onclick="validerReponse()">Valider →</button>';
+        html += '<button class="' + btnValClass + '" id="btn-val" onclick="validerReponse()">Valider →</button>';
       } else {
-        html += '<button class="btn-val" id="btn-val" onclick="validerReponse()" style="margin-top:12px;">Valider →</button>';
+        html += '<button class="' + btnValClass + '" id="btn-val" onclick="validerReponse()" style="margin-top:12px;">Valider →</button>';
       }
       html += '</div>';
     }
@@ -471,9 +530,21 @@
     const nbOk = resultats.filter(r => !r.assigne).length;
     document.getElementById('res-nb-fiches').textContent = nbAssignes;
     document.getElementById('res-nb-ok').textContent = nbOk;
-    if (nbAssignes === 0) document.getElementById('res-message').textContent = '🎉 Excellent ! Tu maîtrises toutes les notions sur les fractions.';
-    else if (nbAssignes <= 3) document.getElementById('res-message').textContent = 'Bon travail ! Quelques notions sont à consolider. Tes fiches sont prêtes dans ton espace.';
-    else document.getElementById('res-message').textContent = 'Pas d\'inquiétude ! Les fiches ci-dessous t\'aideront à progresser étape par étape.';
+
+    // Messages adaptés au mode réévaluation
+    if (isReeval) {
+      if (nbAssignes === 0) {
+        document.getElementById('res-message').textContent = '🎉 Félicitations ! Tu maîtrises désormais toutes les notions. Tes progrès sont remarquables.';
+      } else if (nbAssignes <= 3) {
+        document.getElementById('res-message').textContent = 'Belle progression ! Quelques notions restent à consolider, mais tu as bien avancé.';
+      } else {
+        document.getElementById('res-message').textContent = 'Tu peux continuer à progresser en retravaillant ces notions. Les fiches restent disponibles dans ton espace.';
+      }
+    } else {
+      if (nbAssignes === 0) document.getElementById('res-message').textContent = '🎉 Excellent ! Tu maîtrises toutes les notions sur les fractions.';
+      else if (nbAssignes <= 3) document.getElementById('res-message').textContent = 'Bon travail ! Quelques notions sont à consolider. Tes fiches sont prêtes dans ton espace.';
+      else document.getElementById('res-message').textContent = 'Pas d\'inquiétude ! Les fiches ci-dessous t\'aideront à progresser étape par étape.';
+    }
 
     let html = '';
     resultats.forEach(r => {
